@@ -3,16 +3,11 @@ const fs = require('fs');
 const path = require('path');
 
 async function generateConventionPDF(conventionData) {
-  // Créer un nouveau PDF vierge
   const pdfDoc = await PDFDocument.create();
-
-  // Ajouter une page
   const page = pdfDoc.addPage([595, 842]); // format A4 (en points)
 
-  // Définir les polices
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  // Infos de base
   const { eleve_nom, eleve_prenom, entreprise_nom, date_debut_stage, date_fin_stage } = conventionData;
 
   page.drawText('Convention de stage', {
@@ -47,11 +42,9 @@ async function generateConventionPDF(conventionData) {
     color: rgb(0, 0, 0),
   });
 
-  // Gérer le chemin d'enregistrement
   const fileName = `convention_${eleve_nom}_${eleve_prenom}_${Date.now()}.pdf`;
   const filePath = path.join(__dirname, '../pdfs', fileName);
 
-  // Vérifier que le dossier pdfs existe, sinon le créer
   if (!fs.existsSync(path.join(__dirname, '../pdfs'))) {
     fs.mkdirSync(path.join(__dirname, '../pdfs'));
   }
