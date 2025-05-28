@@ -9,13 +9,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Folder for PDFs
-app.use('/pdfs', express.static('pdfs'));
 
 // Routes
 
 app.use('/api/conventions', require('./routes/conventions.routes'));
 app.use('/api/signatures', require('./routes/signatures.routes'));
+app.use('/pdfs', express.static('pdfs'));
 
 
 
