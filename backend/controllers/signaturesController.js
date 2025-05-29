@@ -12,7 +12,6 @@ exports.signConvention = async (req, res) => {
 
     if (!convention.signatures) convention.signatures = {};
 
-    // Mettre à jour les infos de signature
     convention.signatures[role] = {
       signe: true,
       date: new Date().toISOString(),
@@ -23,12 +22,6 @@ exports.signConvention = async (req, res) => {
   console.log('📄 current signatures:', convention.signatures);
   console.log('🖊️ ajout de la signature pour :', role);
 
-convention.signatures[role] = {
-  signe: true,
-  date: new Date().toISOString(),
-  ip: req.ip || req.headers['x-forwarded-for'],
-  agent: req.headers['user-agent'] || null
-};
 
     await Convention.update(
       { signatures: convention.signatures },
