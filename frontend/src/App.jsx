@@ -1,35 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+import Accueil from "./pages/Accueil";
+import Convention from "./pages/Convention";
+import Signature from "./pages/Signature";
+import Suivi from "./pages/Suivi";
+import TextesLegaux from "./pages/TextesLegaux";
+import RGPD from "./pages/RGPD";
+import Layout from "./components/Layout";
 
-function App() {
-  const [count, setCount] = useState(0)
 
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          C'est moi qui decide de faire un truc avec React et Vite
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Accueil />} />
+        <Route path="/convention" element={<Convention />} />
+        <Route path="/signature" element={<Signature />} />
+        <Route path="/suivi/:token" element={<Suivi />} />
+        <Route path="/textes-legaux" element={<TextesLegaux />} />
+        <Route path="/rgpd" element={<RGPD />} />
+      </Route>
+    </Routes>
+  );
 }
-
-export default App
