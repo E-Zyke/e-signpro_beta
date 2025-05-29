@@ -1,17 +1,16 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-dotenv.config();
+const db = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: 'postgres',
+    logging: false
+  }
+);
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-// Fonction de requête rapide
-const query = (text, params) => {
-  return pool.query(text, params);
-};
-
-module.exports = {
-  query,
-};
+module.exports = db;

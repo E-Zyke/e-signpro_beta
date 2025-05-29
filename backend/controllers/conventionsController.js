@@ -1,126 +1,79 @@
-const db = require('../database');
 const { v4: uuidv4 } = require('uuid');
-const { generateConventionPDF } = require('../services/pdfService');
+const path = require('path');
+const conventionSchema = require('../validations/convention.validation');
 const { generateSignatureToken } = require('../utils/jwtUtils');
+const { generateConventionPDF } = require('../services/pdfService');
+const Convention = require('../models/Convention');
 
 exports.createConvention = async (req, res) => {
-  try {
-    const {
-      lycee_proviseur,
-      lycee_email,
-      lycee_adresse,
-      lycee_tel,
-      lycee_fax,
-      lycee_site,
-      eleve_prenom,
-      eleve_nom,
-      eleve_date_naissance,
-      eleve_adresse,
-      eleve_tel,
-      eleve_email,
-      eleve_classe,
-      prof_principal_nom,
-      prof_referent_email,
-      entreprise_nom,
-      entreprise_siret,
-      entreprise_code_naf,
-      entreprise_assurance_rc,
-      entreprise_adresse,
-      entreprise_tel,
-      entreprise_email,
-      entreprise_tuteur_nom,
-      entreprise_tuteur_fonction,
-      entreprise_tuteur_tel,
-      cpam,
-      securite_sociale,
-      transport_lycee,
-      transport_stage,
-      restauration,
-      restauration_preciser,
-      hebergement,
-      hebergement_preciser,
-      date_debut_stage,
-      date_fin_stage,
-      lieu_stage,
-      horaires_stage
-    } = req.body;
+  const { error, value } = conventionSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: 'Champs invalides', details: error.details });
+  }
 
-    const id = uuidv4();
+  const id = uuidv4();
+  const tokens = {
+    eleve: generateSignatureToken(id, 'eleve'),
+    famille: generateSignatureToken(id, 'famille'),
+    entreprise: generateSignatureToken(id, 'entreprise'),
+    ecole: generateSignatureToken(id, 'ecole')
+  };
 
-    const token_eleve      = generateSignatureToken(id, 'eleve');
-    const token_parent     = generateSignatureToken(id, 'parent');
-    const token_entreprise = generateSignatureToken(id, 'entreprise');
-    const token_prof       = generateSignatureToken(id, 'professeur');
-
-    const pdf_path = await generateConventionPDF(req.body);
-
-    await db.query(
-      `INSERT INTO conventions (
-        id, lycee_proviseur, lycee_email, lycee_adresse, lycee_tel, lycee_fax, lycee_site,
-        eleve_prenom, eleve_nom, eleve_date_naissance, eleve_adresse, eleve_tel, eleve_email, eleve_classe,
-        prof_principal_nom, prof_referent_email,
-        entreprise_nom, entreprise_siret, entreprise_code_naf, entreprise_assurance_rc,
-        entreprise_adresse, entreprise_tel, entreprise_email,
-        entreprise_tuteur_nom, entreprise_tuteur_fonction, entreprise_tuteur_tel,
-        cpam, securite_sociale,
-        transport_lycee, transport_stage,
-        restauration, restauration_preciser,
-        hebergement, hebergement_preciser,
-        date_debut_stage, date_fin_stage, lieu_stage,
-        horaires_stage,
-        token_eleve, token_parent, token_entreprise, token_prof,
-        pdf_path
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7,
-        $8, $9, $10, $11, $12, $13, $14,
-        $15, $16,
-        $17, $18, $19, $20,
-        $21, $22, $23,
-        $24, $25, $26,
-        $27, $28,
-        $29, $30,
-        $31, $32,
-        $33, $34,
-        $35, $36, $37,
-        $38,
-        $39, $40, $41, $42,
-        $43
-      )`,
-      [
-        id,
-        lycee_proviseur, lycee_email, lycee_adresse, lycee_tel, lycee_fax, lycee_site,
-        eleve_prenom, eleve_nom, eleve_date_naissance, eleve_adresse, eleve_tel, eleve_email, eleve_classe,
-        prof_principal_nom, prof_referent_email,
-        entreprise_nom, entreprise_siret, entreprise_code_naf, entreprise_assurance_rc,
-        entreprise_adresse, entreprise_tel, entreprise_email,
-        entreprise_tuteur_nom, entreprise_tuteur_fonction, entreprise_tuteur_tel,
-        cpam, securite_sociale,
-        transport_lycee, transport_stage,
-        restauration, restauration_preciser,
-        hebergement, hebergement_preciser,
-        date_debut_stage, date_fin_stage, lieu_stage,
-        horaires_stage,
-        token_eleve, token_parent, token_entreprise, token_prof,
-        pdf_path
-      ]
-    );
-
-    const base = process.env.BACKEND_URL || 'http://localhost:7000';
-    const links = {
-      eleve:      `${base}/api/signatures/${token_eleve}`,
-      parent:     `${base}/api/signatures/${token_parent}`,
-      entreprise: `${base}/api/signatures/${token_entreprise}`,
-      professeur: `${base}/api/signatures/${token_prof}`
-    };
-
-    res.status(201).json({
-      message: 'Convention créée avec succès.',
+  const date_creation = new Date().toISOString();
+  const statut = 'en_attente';
+  const convention = {
+    ...value,
+    meta: {
       id,
-      pdf_path,
-      links
+      date_creation,
+      tokens,
+      statut,
+      pdf_url: ''
+    },
+    signatures: {
+      eleve: null,
+      famille: null,
+      entreprise: null,
+      ecole: null
+    }
+  };
+
+  const pdfPath = path.join(__dirname, '../pdfs', `${id}.pdf`);
+  try {
+    await generateConventionPDF(convention, pdfPath);
+    convention.meta.pdf_url = `/pdfs/${id}.pdf`;
+
+    await Convention.create({
+      id,
+      data: convention,
+      pdfUrl: convention.meta.pdf_url,
+      statut,
+      dateCreation: new Date()
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la création de la convention.' });
+
+    return res.status(201).json({
+      message: 'Convention créée avec succès',
+      id,
+      tokens,
+      date_creation,
+      pdf_url: convention.meta.pdf_url
+    });
+  } catch (err) {
+    console.error('Erreur :', err);
+    return res.status(500).json({ message: 'Erreur lors de la création de la convention' });
+  }
+};
+
+exports.getConventionById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const convention = await Convention.findByPk(id);
+    if (!convention) {
+      return res.status(404).json({ message: 'Convention non trouvée' });
+    }
+    return res.status(200).json(convention);
+  } catch (err) {
+    console.error('Erreur lors de la récupération :', err);
+    return res.status(500).json({ message: 'Erreur serveur' });
   }
 };

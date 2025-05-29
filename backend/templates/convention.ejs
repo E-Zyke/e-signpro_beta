@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Convention de stage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      font-size: 14px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #1d4ed8;
+    }
+    section {
+      margin-top: 2rem;
+    }
+    h2 {
+      margin-bottom: 0.5rem;
+      font-size: 16px;
+      color: #2563eb;
+    }
+    .field {
+      margin-bottom: 6px;
+    }
+    .label {
+      font-weight: bold;
+    }
+    .value {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Convention de stage</h1>
+
+  <section>
+    <h2>Élève</h2>
+    <div class="field"><span class="label">Nom :</span><span class="value"><%= eleve.nom %></span></div>
+    <div class="field"><span class="label">Prénom :</span><span class="value"><%= eleve.prenom %></span></div>
+    <div class="field"><span class="label">Email :</span><span class="value"><%= eleve.email %></span></div>
+    <div class="field"><span class="label">Téléphone :</span><span class="value"><%= eleve.tel %></span></div>
+    <div class="field"><span class="label">Date de naissance :</span><span class="value"><%= eleve.date_naissance %></span></div>
+    <div class="field"><span class="label">Classe :</span><span class="value"><%= eleve.classe %></span></div>
+  </section>
+
+  <section>
+    <h2>Professeur référent</h2>
+    <div class="field"><span class="label">Nom :</span><span class="value"><%= professeur.nom %></span></div>
+    <div class="field"><span class="label">Email :</span><span class="value"><%= professeur.email %></span></div>
+    div class="field"><span class="label">Téléphone :</span><span class="value"><%= professeur.tel %></span></div>
+  </section>
+
+  <section>
+    <h2>Entreprise</h2>
+    <div class="field"><span class="label">Nom :</span><span class="value"><%= entreprise.nom %></span></div>
+    <div class="field"><span class="label">Adresse :</span><span class="value"><%= entreprise.adresse %></span></div>
+    <div class="field"><span class="label">SIRET :</span><span class="value"><%= entreprise.siret %></span></div>
+    <div class="field"><span class="label">Responsable :</span><span class="value"><%= entreprise.tuteur %></span></div>
+  </section>
+
+  <section>
+    <h2>Stage</h2>
+    <div class="field"><span class="label">Lieu :</span><span class="value"><%= stage.lieu %></span></div>
+    <div class="field"><span class="label">Début :</span><span class="value"><%= stage.date_debut %></span></div>
+    <div class="field"><span class="label">Fin :</span><span class="value"><%= stage.date_fin %></span></div>
+  </section>
+</body>
+</html>
