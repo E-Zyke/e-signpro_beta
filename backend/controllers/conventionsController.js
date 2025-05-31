@@ -1,11 +1,16 @@
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const conventionSchema = require('../validations/convention.validation');
+
 const { generateSignatureToken } = require('../utils/jwtUtils');
 const { generateConventionPDF } = require('../services/pdfService');
+const { sendSignatureEmail } = require('../services/mailService');
+
 const Convention = require('../models/Convention');
 
 exports.createConvention = async (req, res) => {
+  console.log("📨 Données reçues dans req.body :", JSON.stringify(req.body, null, 2));
+  
   const { error, value } = conventionSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: 'Champs invalides', details: error.details });
@@ -16,12 +21,16 @@ exports.createConvention = async (req, res) => {
     eleve: generateSignatureToken(id, 'eleve'),
     famille: generateSignatureToken(id, 'famille'),
     entreprise: generateSignatureToken(id, 'entreprise'),
-    ecole: generateSignatureToken(id, 'ecole')
+    professeur: generateSignatureToken(id, 'professeur')
   };
 
   const date_creation = new Date().toISOString();
   const statut = 'en_attente';
   const convention = {
+    eleve: value.eleve,
+    famille: value.famille,
+    entreprise: value.entreprise,
+    professeur: value.professeur,
     ...value,
     meta: {
       id,
@@ -34,9 +43,23 @@ exports.createConvention = async (req, res) => {
       eleve: null,
       famille: null,
       entreprise: null,
-      ecole: null
+      professeur: null
     }
   };
+
+
+  const emails = {
+    eleve: value.eleve?.email,
+    famille: value.famille?.email,
+    entreprise: value.entreprise?.email,
+    professeur: value.professeur?.email
+  };
+
+
+  const signatureLinks = {};
+    for (const role in tokens) {
+      signatureLinks[role] = `${process.env.FRONTEND_URL}/signature/${tokens[role]}`;
+    }
 
   const pdfPath = path.join(__dirname, '../pdfs', `${id}.pdf`);
   try {
@@ -51,18 +74,34 @@ exports.createConvention = async (req, res) => {
       dateCreation: new Date()
     });
 
+    for (const role in emails) {
+      const email = value?.[role]?.email || value?.professeur?.email || null;
+
+      console.log(`📧 Envoi de l'email de signature pour le rôle ${role} à l'adresse :`, email);
+
+      if (email) {
+        const link = `${process.env.FRONTEND_URL}/signature/${tokens[role]}`;
+
+        await sendSignatureEmail(email, role, link);
+      }
+    }
+
     return res.status(201).json({
       message: 'Convention créée avec succès',
       id,
       tokens,
+      signatureLinks,
       date_creation,
       pdf_url: convention.meta.pdf_url
     });
+
   } catch (err) {
     console.error('Erreur :', err);
     return res.status(500).json({ message: 'Erreur lors de la création de la convention' });
   }
 };
+
+
 
 exports.getConventionById = async (req, res) => {
   const { id } = req.params;

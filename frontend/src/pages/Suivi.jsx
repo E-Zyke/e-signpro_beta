@@ -7,7 +7,6 @@ export default function Suivi() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulation d’un appel au backend pour récupérer le statut de signature
     const mock = {
       eleve: true,
       famille: true,
