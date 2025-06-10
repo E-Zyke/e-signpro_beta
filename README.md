@@ -1,6 +1,6 @@
 # 📄 E-Sign PRO Beta
 
-![CI Status](https://github.com/E-Zyke/e-signpro_beta/actions/workflows/ci.yml/badge.svg)
+[![CI E-Sign PRO](https://github.com/E-Zyke/e-signpro_beta/actions/workflows/e_signpro_ci.yml/badge.svg)](https://github.com/E-Zyke/e-signpro_beta/actions/workflows/e_signpro_ci.yml)
 
 ## 🎯 Aperçu du projet
 
