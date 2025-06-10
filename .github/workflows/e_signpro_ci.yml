@@ -1,4 +1,4 @@
-ame: CI E-Sign PRO
+name: CI E-Sign PRO
 
 on:
   push:
