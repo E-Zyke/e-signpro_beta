@@ -1,0 +1,55 @@
+ame: CI E-Sign PRO
+
+on:
+  push:
+    branches:
+      - main # Exécute le workflow à chaque push sur la branche 'main'
+  pull_request:
+    branches:
+      - main # Exécute le workflow à chaque pull request ciblant la branche 'main'
+
+jobs:
+  build-and-test-backend:
+    runs-on: ubuntu-latest # Utilise la dernière version d'Ubuntu
+    defaults:
+      run:
+        working-directory: backend # Définit le répertoire de travail pour ce job
+
+    steps:
+      - name: Checkout code # Récupère le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js # Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Utilise Node.js version 20 (ou la version que tu utilises)
+
+      - name: Install backend dependencies # Installe les dépendances du backend
+        run: npm install
+
+      - name: Run backend tests # Exécute les tests Jest du backend
+        run: npm test
+
+  build-and-test-frontend:
+    runs-on: ubuntu-latest # Utilise la dernière version d'Ubuntu
+    defaults:
+      run:
+        working-directory: frontend # Définit le répertoire de travail pour ce job
+
+    steps:
+      - name: Checkout code # Récupère le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js # Configure Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Utilise Node.js version 20
+
+      - name: Install frontend dependencies # Installe les dépendances du frontend
+        run: npm install
+
+      - name: Run frontend tests # Exécute les tests Jest du frontend
+        run: npm test
+
+      - name: Build frontend (optional) # Construit l'application frontend (pour vérifier que ça compile)
+        run: npm run build

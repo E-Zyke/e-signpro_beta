@@ -43,7 +43,7 @@ const conventionSchema = Joi.object({
 
   stage: Joi.object({
     date_debut: Joi.date().iso().required(),
-    date_fin: Joi.date().iso().required(),
+    date_fin: Joi.date().iso().greater(Joi.ref('date_debut')).required(),
     lieu: Joi.string().required(),
     horaires: horairesSchema.required()
   }).required(),
