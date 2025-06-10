@@ -23,8 +23,9 @@
     "axios": "^1.9.0",
     "babel": "^6.23.0",
     "react": "^19.1.0",
-
-    "react-dom": "^19.1.0"
+    "react-router-dom": "^7.6.1",
+    "react-dom": "^19.1.0",
+    "emailjs-com": "^3.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.27.2",
