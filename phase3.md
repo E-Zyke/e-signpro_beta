@@ -1,3 +1,0 @@
-Je reprends le code, manque de focus la on est reparti pour de bon. Le Notion est en marche j'ai recup tous les docs ect de l'intranet maintenant on recode un peu et j'essaye de faire de nouvelles choses pour valider les competences du RNCP 5. Maintenant je refais la structure pour pouvoir mieux m'y retrouver.
-
-Ok apres avoir regarder les competences evaluer etc, j'ai vu qu'il fallait faire des wireframes, maquettes et prototype, j'ai donc appris a utlise figma en deux deux, et j'ai reussi a pondre qqch de bien

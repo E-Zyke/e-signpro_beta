@@ -102,7 +102,6 @@ exports.createConvention = async (req, res) => {
 };
 
 
-
 exports.getConventionById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -114,5 +113,48 @@ exports.getConventionById = async (req, res) => {
   } catch (err) {
     console.error('Erreur lors de la récupération :', err);
     return res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+exports.getConventionStatus = async (req, res) => {
+  const { id } = req.params; // L'ID de la convention
+  try {
+    const convention = await Convention.findByPk(id, {
+      attributes: ['id', 'statut', 'signatures', 'data']
+    });
+
+    if (!convention) {
+      return res.status(404).json({ message: 'Convention non trouvée' });
+    }
+
+    const rolesStatus = {};
+    if (convention.signatures) {
+      const orderedRoles = ['eleve', 'famille', 'entreprise', 'professeur'];
+      orderedRoles.forEach(r => {
+        rolesStatus[r] = {
+          signed: !!convention.signatures[r]?.signe, // Convertir en booléen
+          date: convention.signatures[r]?.date || null
+        };
+      });
+    }
+
+    const signatairesInfo = {
+      eleve: { nom: convention.data?.eleve?.nom, prenom: convention.data?.eleve?.prenom, email: convention.data?.eleve?.email },
+      famille: { nom: convention.data?.famille?.nom, prenom: convention.data?.famille?.prenom, email: convention.data?.famille?.email },
+      entreprise: { nom: convention.data?.entreprise?.nom, prenom: convention.data?.entreprise?.tuteur, email: convention.data?.entreprise?.email },
+      professeur: { nom: convention.data?.professeur?.nom, prenom: null, email: convention.data?.professeur?.email }
+    };
+
+
+    return res.status(200).json({
+      id: convention.id,
+      statutGlobal: convention.statut,
+      signatures: rolesStatus,
+      signatairesInfo: signatairesInfo
+    });
+
+  } catch (err) {
+    console.error('Erreur lors de la récupération du statut de la convention par ID :', err);
+    return res.status(500).json({ message: 'Erreur serveur lors de la récupération du statut.' });
   }
 };

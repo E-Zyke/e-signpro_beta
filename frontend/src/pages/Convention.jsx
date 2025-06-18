@@ -143,7 +143,7 @@ export default function Convention() {
 
         {renderSection('Informations sur le Stage', [
           ['date_debut_stage', 'Date de début', 'date'], ['date_fin_stage', 'Date de fin', 'date'], ['lieu_stage', 'Lieu du stage'],
-          ['horaires_lundi', 'Horaires Lundi'], ['horaires_mardi', 'Horaires Mardi'], ['horaires_mercredi', 'Horaires Mercredi'], ['horaires_jeudi', 'Horaires Jeudi'], ['horaires_vendredi', 'Horaires Vendredi']
+          ['horaires_lundi', '8h-18h'], ['horaires_mardi', 'Horaires Mardi'], ['horaires_mercredi', 'Horaires Mercredi'], ['horaires_jeudi', 'Horaires Jeudi'], ['horaires_vendredi', 'Horaires Vendredi']
         ])}
 
         <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">

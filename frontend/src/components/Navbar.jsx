@@ -9,7 +9,7 @@ export default function Navbar() {
       <div className="space-x-4 text-sm">
         <Link to="/">Accueil</Link>
         <Link to="/convention">Convention</Link>
-        <Link to="/suivi/token-demo">Suivi</Link>
+        <Link to="/suivi/">Suivi</Link>
       </div>
     </nav>
   );

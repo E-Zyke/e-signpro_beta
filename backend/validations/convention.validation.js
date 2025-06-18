@@ -20,7 +20,8 @@ const conventionSchema = Joi.object({
 
   professeur: Joi.object({
     nom: Joi.string().required(),
-    email: Joi.string().email().required()
+    email: Joi.string().email().required(),
+    tel: Joi.string().required()
   }).required(),
 
   entreprise: Joi.object({

@@ -6,6 +6,7 @@ const conventionsController = require('../controllers/conventionsController');
 router.post('/', conventionsController.createConvention);
 // router.get('/', conventionsController.getAllConventions);
 router.get('/:id', conventionsController.getConventionById);
+router.get('/:id/status', conventionsController.getConventionStatus);
 // router.patch('/:id', conventionsController.updateConvention);
 // router.delete('/:id', conventionsController.deleteConvention);
 

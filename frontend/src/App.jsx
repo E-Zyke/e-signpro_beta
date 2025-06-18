@@ -14,8 +14,8 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<Accueil />} />
         <Route path="/convention" element={<Convention />} />
-        <Route path="/signature/:token" element={<Signature />} />
-        <Route path="/suivi/:token" element={<Suivi />} />
+        <Route path="/signature/:id" element={<Signature />} />
+        <Route path="/suivi/" element={<Suivi />} />
         <Route path="/textes-legaux" element={<TextesLegaux />} />
         <Route path="/rgpd" element={<RGPD />} />
       </Route>
