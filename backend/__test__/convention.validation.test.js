@@ -172,7 +172,7 @@ describe('Convention Validation Schema (New Structure)', () => {
   test('should return an error if stage.date_debut is after stage.date_fin', () => {
     const invalidDates = {
       eleve: { /* ... données valides ... */ nom: 'Doe', prenom: 'John', email: 'a@b.com', tel: '1', date_naissance: '2000-01-01', classe: 'A' },
-      professeur: { /* ... données valides ... */ nom: 'Prof', email: 'p@b.com' },
+      professeur: { /* ... données valides ... */ nom: 'Prof', email: 'p@b.com', tel: '0612345678' },
       entreprise: { /* ... données valides ... */ nom: 'Ent', tel: '1', email: 'e@b.com', adresse: 'addr', siret: '1', rc: '1', naf: '1', tuteur: 'tuteur' },
       famille: { /* ... données valides ... */ secu: '1', cpam: '1', transport: '1', restauration: '1' },
       stage: {
