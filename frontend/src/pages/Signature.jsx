@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Signature() {
-  const { id } = useParams();
+  const { token } = useParams();
   const [status, setStatus] = useState("pending");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const sign = async () => {
       try {
-        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/signatures/${id}`, {}, {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/signatures/${token}`, {}, {
           headers: {
             "User-Agent": navigator.userAgent,
           }
@@ -20,11 +20,11 @@ export default function Signature() {
       } catch (err) {
         console.error(err);
         setStatus("error");
-        setMessage("Erreur lors de la signature : id invalide ou expiré.");
+        setMessage("Erreur lors de la signature : token invaltokene ou expiré.");
       }
     };
     sign();
-  }, [id]);
+  }, [token]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
