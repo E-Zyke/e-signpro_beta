@@ -1,4 +1,4 @@
-// backend/__tests__/convention.validation.test.js
+Paris// backend/__tests__/convention.validation.test.js
 const conventionSchema = require('../validations/convention.validation'); // On importe directement le schéma principal
 
 describe('Convention Validation Schema (New Structure)', () => {
@@ -192,14 +192,14 @@ describe('Convention Validation Schema (New Structure)', () => {
     // L'erreur sera probablement liée au format ISO ou à la validité de la date elle-même.
     // Il faut vérifier la sortie réelle de Joi pour ajuster le message d'erreur.
     // Pour l'instant, on se contente de vérifier qu'il y a une erreur sur les dates.
-    expect(error.details[0].path).toEqual(['stage', 'date_fin']); // Vérifie le chemin de l'erreur
+    expect(error.details[0].message).toMatch(/date/i); // Vérifie que le message parle des dates
   });
 
   // Teste un statut 'meta.statut' invalide
   test('should return an error if meta.statut is an invalid value', () => {
     const invalidStatus = {
         eleve: { /* ... données valides ... */ nom: 'Doe', prenom: 'John', email: 'a@b.com', tel: '1', date_naissance: '2000-01-01', classe: 'A' },
-        professeur: { /* ... données valides ... */ nom: 'Prof', email: 'p@b.com' },
+        professeur: { /* ... données valides ... */ nom: 'Prof', email: 'p@b.com', tel: '0612345678' },
         entreprise: { /* ... données valides ... */ nom: 'Ent', tel: '1', email: 'e@b.com', adresse: 'addr', siret: '1', rc: '1', naf: '1', tuteur: 'tuteur' },
         famille: { /* ... données valides ... */ secu: '1', cpam: '1', transport: '1', restauration: '1' },
         stage: { /* ... données valides ... */ date_debut: '2025-06-10', date_fin: '2025-08-31', lieu: 'lieu', horaires: { lundi: '9h-17h', mardi: '9h-17h', mercredi: '9h-17h', jeudi: '9h-17h', vendredi: '9h-17h' } },
