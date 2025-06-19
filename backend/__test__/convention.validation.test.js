@@ -16,7 +16,8 @@ describe('Convention Validation Schema (New Structure)', () => {
       },
       professeur: {
         nom: 'Dupont',
-        email: 'dupont@lycee.fr'
+        email: 'dupont@lycee.fr',
+        tel: '0612345678'
       },
       entreprise: {
         nom: 'Tech Solutions S.A.',
@@ -72,7 +73,8 @@ describe('Convention Validation Schema (New Structure)', () => {
       },
       professeur: {
         nom: 'Dupont',
-        email: 'dupont@lycee.fr'
+        email: 'dupont@lycee.fr',
+        tel: '0612345678'
       },
       entreprise: {
         nom: 'Tech Solutions S.A.',
@@ -127,8 +129,9 @@ describe('Convention Validation Schema (New Structure)', () => {
         classe: 'Terminale STI2D'
       },
       professeur: {
-        nom: 'Dupont',
-        email: 'dupont@lycee.fr'
+      nom: 'Dupont',
+      email: 'dupont@lycee.fr',
+      tel: '0612345678'
       },
       entreprise: {
         nom: 'Tech Solutions S.A.',
