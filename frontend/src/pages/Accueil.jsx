@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Suivi from "./Suivi";
 
 export default function Accueil() {
   return (
@@ -11,7 +10,7 @@ export default function Accueil() {
         E-Sign PRO est la solution intuitive et sécurisée pour dématérialiser et simplifier la signature des conventions de stage des lycées professionnels. Une expérience fluide pour élèves, parents, entreprises et équipes pédagogiques.
       </p>
 
-      {/* Section des fonctionnalités clés - Amélioration du texte */}
+      {/* Section des fonctionnalités clés */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10 mb-12">
         <div className="p-6 border rounded-2xl shadow-lg bg-white transform hover:scale-105 transition-transform duration-300">
           <div className="text-5xl mb-4">✨</div>
@@ -44,7 +43,7 @@ export default function Accueil() {
           Vous avez déjà une convention en cours ? Suivez son avancement en direct !
         </p>
         <Link
-          to="/suivi/" // Utilisez la variable pour le lien
+          to="/suivi/"
           className="inline-block px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold text-lg rounded-full shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 transform hover:scale-105"
         >
           Accéder au Suivi de Convention
