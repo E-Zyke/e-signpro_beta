@@ -1,4 +1,3 @@
-Paris// backend/__tests__/convention.validation.test.js
 const conventionSchema = require('../validations/convention.validation'); // On importe directement le schéma principal
 
 describe('Convention Validation Schema (New Structure)', () => {
