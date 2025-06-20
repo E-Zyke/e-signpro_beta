@@ -117,7 +117,7 @@ exports.getConventionById = async (req, res) => {
 };
 
 exports.getConventionStatus = async (req, res) => {
-  const { id } = req.params; // L'ID de la convention
+  const { id } = req.params;
   try {
     const convention = await Convention.findByPk(id, {
       attributes: ['id', 'statut', 'signatures', 'data']
