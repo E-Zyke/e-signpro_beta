@@ -53,7 +53,7 @@ export default function Convention() {
     const dataToSend = { ...formData };
     delete dataToSend.showRecap;
     console.log("📦 Données envoyées :", dataToSend);
-    alert("Formulaire validé et prêt à être envoyé !");
+    alert("Formulaire validé et envoyé !");
   };
 
   const renderInput = (name, placeholder, type = 'text') => (
