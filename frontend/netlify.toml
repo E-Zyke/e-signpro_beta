@@ -1,0 +1,6 @@
+[build]
+  command = "npm run build" # La commande normale de build
+  publish = "dist"          # Le dossier de sortie de Vite, relatif à `frontend/`
+
+[build.environment]
+  NPM_FLAGS = "--legacy-peer-deps" # Ceci applique le flag à `npm install`
