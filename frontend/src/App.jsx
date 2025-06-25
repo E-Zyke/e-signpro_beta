@@ -5,7 +5,9 @@ import Signature from "./pages/Signature";
 import Suivi from "./pages/Suivi";
 import TextesLegaux from "./pages/TextesLegaux";
 import RGPD from "./pages/RGPD";
+import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
+
 
 
 export default function App() {
@@ -18,6 +20,7 @@ export default function App() {
         <Route path="/suivi/" element={<Suivi />} />
         <Route path="/textes-legaux" element={<TextesLegaux />} />
         <Route path="/rgpd" element={<RGPD />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 
 export default function Accueil() {
   return (
+    <>
+      <Helmet>
+        <title>E-Sign PRO | Signature de Conventions de Stage Simplifiée</title>
+        <meta name="description" content="Dématérialisez et accélérez la signature de vos conventions de stage avec E-Sign PRO. Solution intuitive et sécurisée pour lycées professionnels, élèves, parents et entreprises." />
+      </Helmet>
     <div className="text-center max-w-4xl mx-auto">
       <h2 className="text-4xl sm:text-5xl font-extrabold text-blue-700 mb-6 leading-tight">
         Dites adieu à la paperasse. <br /> Signez vos conventions de stage en un éclair !
@@ -54,5 +60,6 @@ export default function Accueil() {
       </div>
 
     </div>
+    </>
   );
 }

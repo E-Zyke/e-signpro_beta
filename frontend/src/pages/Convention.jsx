@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 export default function Convention() {
   const [showForm, setShowForm] = useState(false);
@@ -100,6 +101,11 @@ export default function Convention() {
   // Page d'accueil avec le bouton
   if (!showForm) {
     return (
+      <>
+      <Helmet>
+        <title>Suivi des Conventions de Stage | E-Sign PRO</title>
+        <meta name="description" content="Vérifiez le statut de signature de vos conventions de stage en temps réel avec E-Sign PRO. Suivez chaque signataire (élève, famille, entreprise, professeur)." />
+      </Helmet>
       <section className="max-w-6xl mx-auto px-4 py-6 sm:py-8 lg:py-12">
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-blue-700">
@@ -157,6 +163,7 @@ export default function Convention() {
           </button>
         </div>
       </section>
+      </>
     );
   }
 
