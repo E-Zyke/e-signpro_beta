@@ -61,6 +61,12 @@ exports.createConvention = async (req, res) => {
       signatureLinks[role] = `${process.env.FRONTEND_URL}/signature/${tokens[role]}`;
     }
 
+  const pdfsFolderPath = path.join(__dirname, '../pdfs');
+  if (!require('fs').existsSync(pdfsFolderPath)) {
+      require('fs').mkdirSync(pdfsFolderPath, { recursive: true });
+      console.log(`Dossier PDF créé : ${pdfsFolderPath}`);
+  }
+
   const pdfPath = path.join(__dirname, '../pdfs', `${id}.pdf`);
   try {
     await generateConventionPDF(convention, pdfPath);
@@ -75,14 +81,15 @@ exports.createConvention = async (req, res) => {
     });
 
     for (const role in emails) {
-      const email = value?.[role]?.email || value?.professeur?.email || null;
+      const email = emails[role];
 
       console.log(`📧 Envoi de l'email de signature pour le rôle ${role} à l'adresse :`, email);
 
-      if (email) {
+      if (email) { // Vérifie que l'email existe avant d'envoyer
         const link = `${process.env.FRONTEND_URL}/signature/${tokens[role]}`;
-
         await sendSignatureEmail(email, role, link);
+      } else {
+        console.warn(`Adresse email manquante pour le rôle ${role}. L'email de signature ne sera pas envoyé.`);
       }
     }
 
