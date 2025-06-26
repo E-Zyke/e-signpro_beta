@@ -20,7 +20,7 @@ export default function Signature() {
       } catch (err) {
         console.error(err);
         setStatus("error");
-        setMessage("Erreur lors de la signature : token invaltokene ou expiré.");
+        setMessage("Erreur lors de la signature : token invalid ou expiré.");
       }
     };
     sign();
