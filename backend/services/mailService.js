@@ -14,24 +14,25 @@ const transporter = nodemailer.createTransport({
 });
 
 /**
- * Envoie un lien de signature par email
- * @param {string} to - L'adresse email du destinataire
- * @param {string} role - Le rôle du destinataire (eleve, famille, entreprise, ecole)
- * @param {string} link - Le lien unique de signature à envoyer
+ * Envoie un lien de signature par email.
+ * @param {string} to - L'adresse email du destinataire final en production.
+ * @param {string} role - Le rôle du destinataire (ex: "eleve", "famille", "entreprise", "professeur").
+ * @param {string} link - Le lien unique de signature à inclure dans l'email.
+ * @param {string} conventionId - L'ID de la convention pour le suivi.
  */
-async function sendSignatureEmail(to, role, link) {
+async function sendSignatureEmail(to, role, link, conventionId) { // Ajout de conventionId ici
     const destination = isDev ? devEmail : to;
 
     await transporter.sendMail({
         from: `"E-SIGN PRO" <${process.env.SMTP_USER}>`,
+        subject: `Signature requise pour la convention de stage (ID: ${conventionId})`,
         to: destination,
-        subject: `Signature requise pour la convention de stage`,
         html: `
             <div style="font-family: sans-serif; padding: 20px;">
                 <h2>Signature demandée</h2>
                 <p>Bonjour,</p>
-                <p>Vous êtes invité à signer la convention en tant que <strong>${role}</strong>.</p>
-                <p>
+                <p>Vous êtes invité à signer la convention de stage en tant que <strong>${role}</strong>.</p>
+                <p>L'ID de la convention de stage est : <strong>${conventionId}</strong></p> <p>
                 <a href="${link}" style="display: inline-block; padding: 10px 20px; background-color:rgb(49, 108, 236); color: white; text-decoration: none; border-radius: 5px;">
                     Signer maintenant
                 </a>
@@ -42,7 +43,7 @@ async function sendSignatureEmail(to, role, link) {
             </div>
             `
         });
-    console.log(`Email de signature envoyé à ${destination} pour le rôle ${role}`);
-    }
+    console.log(`Email de signature envoyé à ${destination} pour le rôle ${role} (Convention ID: ${conventionId})`);
+}
 
-    module.exports = { sendSignatureEmail };
+module.exports = { sendSignatureEmail };

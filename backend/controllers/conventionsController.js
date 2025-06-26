@@ -87,7 +87,7 @@ exports.createConvention = async (req, res) => {
 
       if (email) { // Vérifie que l'email existe avant d'envoyer
         const link = `${process.env.FRONTEND_URL}/signature/${tokens[role]}`;
-        await sendSignatureEmail(email, role, link);
+        await sendSignatureEmail(email, role, link, id);
       } else {
         console.warn(`Adresse email manquante pour le rôle ${role}. L'email de signature ne sera pas envoyé.`);
       }
