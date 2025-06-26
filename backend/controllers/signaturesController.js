@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 exports.signConvention = async (req, res) => {
     try {
         const token = req.params.token;
+
+        console.log('DEBUG JWT: Token reçu par le backend:', token);
+        console.log('DEBUG JWT: Type du token:', typeof token);
+        console.log('DEBUG JWT: Longueur du token:', token ? token.length : 'N/A');
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { id_convention, role } = decoded;
 
