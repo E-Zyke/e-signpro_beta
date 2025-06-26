@@ -1,45 +1,21 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import axios from 'axios'; // Import de axios pour les appels API
 
 export default function Convention() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    eleve_nom: '',
-    eleve_prenom: '',
-    eleve_email: '',
-    eleve_tel: '',
-    eleve_date_naissance: '',
-    eleve_classe: '',
-    prof_nom: '',
-    prof_email: '',
-    prof_tel: '',
-
-    entreprise_nom: '',
-    entreprise_tel: '',
-    entreprise_email: '',
-    entreprise_adresse: '',
-    entreprise_siret: '',
-    entreprise_rc: '',
-    entreprise_naf: '',
-    entreprise_tuteur: '',
-
-    famille_secu: '',
-    famille_cpam: '',
-    famille_transport: '',
-    famille_restauration: '',
-
-    date_debut_stage: '',
-    date_fin_stage: '',
-    lieu_stage: '',
-
-    horaires_lundi: '',
-    horaires_mardi: '',
-    horaires_mercredi: '',
-    horaires_jeudi: '',
-    horaires_vendredi: '',
-
+    eleve_nom: '', eleve_prenom: '', eleve_email: '', eleve_tel: '', eleve_date_naissance: '', eleve_classe: '',
+    prof_nom: '', prof_email: '', prof_tel: '',
+    entreprise_nom: '', entreprise_tel: '', entreprise_email: '', entreprise_adresse: '', entreprise_siret: '', entreprise_rc: '', entreprise_naf: '', entreprise_tuteur: '',
+    famille_nom: '', // Ajout de famille_nom au formData
+    famille_secu: '', famille_cpam: '', famille_transport: '', famille_restauration: '', famille_email: '',
+    date_debut_stage: '', date_fin_stage: '', lieu_stage: '',
+    horaires_lundi: '', horaires_mardi: '', horaires_mercredi: '', horaires_jeudi: '', horaires_vendredi: '',
     showRecap: false
   });
+  const [submissionStatus, setSubmissionStatus] = useState(null); // 'success', 'error', 'pending'
+  const [submissionMessage, setSubmissionMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,11 +26,62 @@ export default function Convention() {
     setFormData({ ...formData, showRecap: true });
   };
 
-  const handleConfirm = () => {
-    const dataToSend = { ...formData };
-    delete dataToSend.showRecap;
-    console.log("📦 Données envoyées :", dataToSend);
-    alert("Formulaire validé et envoyé !");
+  const handleConfirm = async () => {
+    setSubmissionStatus('pending');
+    setSubmissionMessage('Envoi de la convention en cours...');
+
+    const dataToSend = {
+      eleve: {
+        nom: formData.eleve_nom, prenom: formData.eleve_prenom, email: formData.eleve_email,
+        tel: formData.eleve_tel, date_naissance: formData.eleve_date_naissance, classe: formData.eleve_classe
+      },
+      professeur: {
+        nom: formData.prof_nom, email: formData.prof_email, tel: formData.prof_tel
+      },
+      entreprise: {
+        nom: formData.entreprise_nom, tel: formData.entreprise_tel, email: formData.entreprise_email,
+        adresse: formData.entreprise_adresse, siret: formData.entreprise_siret, rc: formData.entreprise_rc,
+        naf: formData.entreprise_naf, tuteur: formData.entreprise_tuteur
+      },
+      famille: {
+        nom: formData.famille_nom, // Mappage du nom de la famille
+        secu: formData.famille_secu, cpam: formData.famille_cpam, transport: formData.famille_transport,
+        restauration: formData.famille_restauration, email: formData.famille_email
+      },
+      stage: {
+        date_debut: formData.date_debut_stage, date_fin: formData.date_fin_stage, lieu: formData.lieu_stage,
+        horaires: {
+          lundi: formData.horaires_lundi, mardi: formData.horaires_mardi, mercredi: formData.horaires_mercredi,
+          jeudi: formData.horaires_jeudi, vendredi: formData.horaires_vendredi
+        }
+      }
+    };
+
+    try {
+      console.log("📦 Données envoyées au backend :", dataToSend);
+      // Utilisation de VITE_BACKEND_URL pour les appels API
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/conventions`, dataToSend);
+      
+      setSubmissionStatus('success');
+      setSubmissionMessage(response.data.message || "Convention créée et emails envoyés avec succès !");
+      // Réinitialiser le formulaire après succès
+      setFormData({
+        eleve_nom: '', eleve_prenom: '', eleve_email: '', eleve_tel: '', eleve_date_naissance: '', eleve_classe: '',
+        prof_nom: '', prof_email: '', prof_tel: '',
+        entreprise_nom: '', entreprise_tel: '', entreprise_email: '', entreprise_adresse: '', entreprise_siret: '', entreprise_rc: '', entreprise_naf: '', entreprise_tuteur: '',
+        famille_nom: '', famille_secu: '', famille_cpam: '', famille_transport: '', famille_restauration: '', famille_email: '',
+        date_debut_stage: '', date_fin_stage: '', lieu_stage: '',
+        horaires_lundi: '', horaires_mardi: '', horaires_mercredi: '', horaires_jeudi: '', horaires_vendredi: '',
+        showRecap: false
+      });
+      // Optionnel: revenir à la page d'accueil ou de départ après un court délai
+      setTimeout(() => setShowForm(false), 3000); 
+
+    } catch (error) {
+      console.error("❌ Erreur lors de l'envoi du formulaire :", error.response?.data || error.message);
+      setSubmissionStatus('error');
+      setSubmissionMessage(error.response?.data?.message || "Une erreur est survenue lors de la création de la convention.");
+    }
   };
 
   const renderInput = (name, placeholder, type = 'text') => (
@@ -65,6 +92,7 @@ export default function Convention() {
       className="border border-gray-300 rounded px-3 sm:px-4 py-2 sm:py-3 w-full text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
       onChange={handleChange}
       value={formData[name]}
+      required
     />
   );
 
@@ -98,13 +126,13 @@ export default function Convention() {
     </div>
   );
 
-  // Page d'accueil avec le bouton
+  // Page d'accueil avec le bouton pour créer une convention
   if (!showForm) {
     return (
       <>
       <Helmet>
-        <title>Suivi des Conventions de Stage | E-Sign PRO</title>
-        <meta name="description" content="Vérifiez le statut de signature de vos conventions de stage en temps réel avec E-Sign PRO. Suivez chaque signataire (élève, famille, entreprise, professeur)." />
+        <title>Créer une Convention de Stage | E-Sign PRO</title>
+        <meta name="description" content="Créez votre convention de stage en quelques minutes avec E-Sign PRO. Formulaire simplifié, envoi automatique des liens de signature." />
       </Helmet>
       <section className="max-w-6xl mx-auto px-4 py-6 sm:py-8 lg:py-12">
         <div className="text-center mb-8 sm:mb-12">
@@ -177,7 +205,7 @@ export default function Convention() {
             onClick={() => setShowForm(false)}
             className="text-gray-500 hover:text-gray-700 text-sm sm:text-base self-start sm:self-auto"
           >
-            ← Retour à l'accueil
+            ← Modifier
           </button>
         </div>
 
@@ -208,8 +236,8 @@ export default function Convention() {
         ])}
 
         {recapSection('Informations Famille', [
-          ['famille_nom', 'Nom'],
-          ['famille_email', 'Email'],
+          ['famille_nom', 'Nom du parent / tuteur'],
+          ['famille_email', 'Email parent / tuteur'],
           ['famille_secu', 'N° de sécurité sociale'], 
           ['famille_cpam', 'CPAM'], 
           ['famille_transport', 'Transport'], 
@@ -227,18 +255,31 @@ export default function Convention() {
           ['horaires_vendredi', 'Horaires Vendredi']
         ])}
 
+        {/* Status message */}
+        {submissionStatus && (
+          <div className={`mt-4 p-4 rounded-lg ${
+            submissionStatus === 'success' ? 'bg-green-100 text-green-700' :
+            submissionStatus === 'error' ? 'bg-red-100 text-red-700' :
+            'bg-blue-100 text-blue-700'
+          }`}>
+            {submissionMessage}
+          </div>
+        )}
+
         <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button 
             onClick={() => setFormData({ ...formData, showRecap: false })} 
             className="px-6 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors text-sm sm:text-base"
+            disabled={submissionStatus === 'pending'}
           >
             ← Modifier
           </button>
           <button 
             onClick={handleConfirm} 
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
+            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={submissionStatus === 'pending'}
           >
-            Confirmer et envoyer
+            {submissionStatus === 'pending' ? 'Envoi en cours...' : 'Confirmer et envoyer'}
           </button>
         </div>
       </section>
@@ -305,13 +346,13 @@ export default function Convention() {
           ['horaires_vendredi', 'Horaires Vendredi']
         ])}
 
-        <button 
-          type="submit" 
-          className="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
-        >
-          Aperçu avant validation
-        </button>
-      </form>
-    </section>
-  );
-}
+          <button 
+            type="submit" 
+            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
+          >
+            Aperçu avant validation
+          </button>
+        </form>
+      </section>
+    );
+  }
