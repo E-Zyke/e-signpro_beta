@@ -5,42 +5,54 @@ exports.signConvention = async (req, res) => {
     try {
         const token = req.params.token;
 
-        console.log('DEBUG JWT: Token reçu par le backend:', token);
-        console.log('DEBUG JWT: Type du token:', typeof token);
-        console.log('DEBUG JWT: Longueur du token:', token ? token.length : 'N/A');
+
+        console.log('SignatureController: Token reçu:', token ? `${token.substring(0, 30)}...` : 'N/A');
+
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { id_convention, role } = decoded;
 
+        console.log(`SignatureController: Tentative de signature pour Convention ID: ${id_convention}, Rôle: ${role}`);
+
+        // Recherche la convention dans la base de données
         const convention = await Convention.findByPk(id_convention);
         if (!convention) {
+            console.warn(`SignatureController: Convention introuvable pour ID: ${id_convention}`);
             return res.status(404).json({ error: 'Convention introuvable' });
         }
 
+        let currentSignatures = convention.signatures || {}; 
+        const updatedSignatures = { ...currentSignatures };
 
-        if (!convention.signatures) {
-            convention.signatures = {};
-        }
-
-        // Vérifie si ce rôle a déjà signé pour éviter des signatures multiples
-        if (convention.signatures[role] && convention.signatures[role].signe) {
+        if (updatedSignatures[role] && updatedSignatures[role].signe) {
+            console.log(`SignatureController: Cette partie (${role}) a déjà signé pour Convention ID: ${id_convention}`);
             return res.status(400).json({ message: `Cette partie (${role}) a déjà signé.` });
         }
 
-        // Met à jour l'instance en mémoire
-        convention.signatures[role] = {
+        updatedSignatures[role] = {
             signe: true,
             date: new Date().toISOString(),
-            ip: req.ip || req.headers['x-forwarded-for'],
-            agent: req.headers['user-agent'] || null
+            ip: req.ip || req.headers['x-forwarded-for'], // Capture l'IP du client (gère les proxys)
+            agent: req.headers['user-agent'] || null // Capture l'agent utilisateur
         };
-
+        
+        convention.signatures = updatedSignatures;
+        
         await convention.save();
 
+        console.log(`SignatureController: Signature enregistrée avec succès pour le rôle : ${role}, Convention ID: ${id_convention}`);
         res.status(200).json({ message: `Signature enregistrée pour le rôle : ${role}` });
 
     } catch (err) {
-        console.error('Erreur lors de la signature de la convention :', err);
-        res.status(400).json({ error: 'Token invalide ou expiré.' });
+        // Log l'erreur complète pour le débogage côté serveur
+        console.error('SignatureController: Erreur lors de la signature :', err);
+
+        // Gère spécifiquement les erreurs JWT (malformé, expiré, invalide)
+        if (err.name === 'JsonWebTokenError') {
+            res.status(400).json({ error: `Token invalide ou expiré: ${err.message}` });
+        } else {
+            // Pour toute autre erreur inattendue
+            res.status(500).json({ error: 'Erreur serveur interne lors de la signature.' });
+        }
     }
 };
