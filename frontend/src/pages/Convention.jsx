@@ -208,7 +208,8 @@ export default function Convention() {
         ])}
 
         {recapSection('Informations Famille', [
-          ['famille_email', 'Email parent / tuteur', 'email'],
+          ['famille_nom', 'Nom'],
+          ['famille_email', 'Email'],
           ['famille_secu', 'N° de sécurité sociale'], 
           ['famille_cpam', 'CPAM'], 
           ['famille_transport', 'Transport'], 
@@ -285,6 +286,7 @@ export default function Convention() {
         ])}
 
         {renderSection('Famille', [
+          ['famille_nom', 'Nom du parent / tuteur'],
           ['famille_email', 'Email parent / tuteur', 'email'],
           ['famille_secu', 'N° de sécurité sociale'], 
           ['famille_cpam', 'CPAM'], 

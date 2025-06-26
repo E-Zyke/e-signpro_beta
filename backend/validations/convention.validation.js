@@ -37,6 +37,7 @@ const conventionSchema = Joi.object({
 
   famille: Joi.object({
     nom: Joi.string().required(),
+    email: Joi.string().email().required(),
     secu: Joi.string().required(),
     cpam: Joi.string().required(),
     transport: Joi.string().required(),
