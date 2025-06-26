@@ -55,8 +55,7 @@ export default function Suivi() {
     eleve: 'Élève',
     famille: 'Famille',
     entreprise: 'Entreprise',
-    professeur: 'Professeur', // Assurez-vous que ce rôle correspond à votre backend
-    // ecole: 'École' // Si ce rôle n'est pas utilisé ou traité différemment, vous pouvez l'enlever ou l'adapter
+    professeur: 'Professeur',
   };
 
   return (

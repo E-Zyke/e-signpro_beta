@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function Signature() {
   const { token } = useParams();
+  console.log('FRONTEND DEBUG: Token from useParams:', token);
   const [status, setStatus] = useState("pending");
   const [message, setMessage] = useState("");
 
