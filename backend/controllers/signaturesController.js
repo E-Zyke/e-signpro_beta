@@ -1,4 +1,4 @@
-const { Convention } = require('../models'); // Assurez-vous que Convention est correctement exporté
+const { Convention } = require('../models');
 const jwt = require('jsonwebtoken');
 
 exports.signConvention = async (req, res) => {
@@ -14,7 +14,6 @@ exports.signConvention = async (req, res) => {
 
         console.log(`SignatureController: Tentative de signature pour Convention ID: ${id_convention}, Rôle: ${role}`);
 
-        // Recherche la convention dans la base de données
         const convention = await Convention.findByPk(id_convention);
         if (!convention) {
             console.warn(`SignatureController: Convention introuvable pour ID: ${id_convention}`);
@@ -32,8 +31,8 @@ exports.signConvention = async (req, res) => {
         updatedSignatures[role] = {
             signe: true,
             date: new Date().toISOString(),
-            ip: req.ip || req.headers['x-forwarded-for'], // Capture l'IP du client (gère les proxys)
-            agent: req.headers['user-agent'] || null // Capture l'agent utilisateur
+            ip: req.ip || req.headers['x-forwarded-for'],
+            agent: req.headers['user-agent'] || null
         };
         
         convention.signatures = updatedSignatures;
@@ -44,14 +43,11 @@ exports.signConvention = async (req, res) => {
         res.status(200).json({ message: `Signature enregistrée pour le rôle : ${role}` });
 
     } catch (err) {
-        // Log l'erreur complète pour le débogage côté serveur
         console.error('SignatureController: Erreur lors de la signature :', err);
 
-        // Gère spécifiquement les erreurs JWT (malformé, expiré, invalide)
         if (err.name === 'JsonWebTokenError') {
             res.status(400).json({ error: `Token invalide ou expiré: ${err.message}` });
         } else {
-            // Pour toute autre erreur inattendue
             res.status(500).json({ error: 'Erreur serveur interne lors de la signature.' });
         }
     }
