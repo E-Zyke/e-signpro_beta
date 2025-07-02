@@ -25,7 +25,7 @@ const conventionSchema = Joi.object({
       'string.pattern.base': 'Le numéro de téléphone doit commencer par 0 et contenir 10 chiffres',
       'string.length': 'Le numéro de téléphone doit contenir exactement 10 chiffres'
     }),
-    date_naissance: Joi.date().iso().required().messages({
+    date_naissance: Joi.date().required().messages({
       'date.iso': 'La date de naissance doit être au format ISO'
     }),
     classe: Joi.string().min(2).max(50).required().messages({
@@ -109,10 +109,10 @@ const conventionSchema = Joi.object({
   }).required(),
 
   stage: Joi.object({
-    date_debut: Joi.date().iso().required().messages({
+    date_debut: Joi.date().required().messages({
       'date.iso': 'La date de début doit être au format ISO'
     }),
-    date_fin: Joi.date().iso().greater(Joi.ref('date_debut')).required().messages({
+    date_fin: Joi.date().greater(Joi.ref('date_debut')).required().messages({
       'date.iso': 'La date de fin doit être au format ISO',
       'date.greater': 'La date de fin doit être postérieure à la date de début'
     }),
