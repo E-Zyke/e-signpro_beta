@@ -24,7 +24,7 @@ exports.createConvention = async (req, res) => {
     professeur: generateSignatureToken(id, 'professeur')
   };
 
-  const date_creation = new Date().toISOString();
+  const date_creation = new Date().toLocaleDateString('fr-FR');
   const statut = 'en_attente';
   const convention = {
     eleve: value.eleve,
@@ -77,7 +77,7 @@ exports.createConvention = async (req, res) => {
       data: convention,
       pdfUrl: convention.meta.pdf_url,
       statut,
-      dateCreation: new Date()
+      dateCreation: new Date().toLocaleDateString('fr-FR')
     });
 
     for (const role in emails) {
@@ -135,14 +135,28 @@ exports.getConventionStatus = async (req, res) => {
     }
 
     const rolesStatus = {};
+    let allSigned = true;
+    const orderedRoles = ['eleve', 'famille', 'entreprise', 'professeur'];
+
     if (convention.signatures) {
-      const orderedRoles = ['eleve', 'famille', 'entreprise', 'professeur'];
       orderedRoles.forEach(r => {
+        const isSigned = !!convention.signatures[r]?.signe;
         rolesStatus[r] = {
-          signed: !!convention.signatures[r]?.signe, // Convertir en booléen
+          signed: isSigned,
           date: convention.signatures[r]?.date || null
         };
+        if (!isSigned) {
+          allSigned = false;
+        }
       });
+    } else {
+      allSigned = false;
+    }
+
+    if (allSigned && convention.statut !== 'validée') {
+      await convention.update({ statut: 'validée' });
+      console.log(`Convention ${id} mise à jour au statut 'validée' car toutes les signatures sont présentes.`);
+      convention.statut = 'validée';
     }
 
     const signatairesInfo = {

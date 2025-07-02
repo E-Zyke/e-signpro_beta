@@ -59,12 +59,10 @@ export default function Convention() {
 
     try {
       console.log("📦 Données envoyées au backend :", dataToSend);
-      // Utilisation de VITE_BACKEND_URL pour les appels API
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/conventions`, dataToSend);
       
       setSubmissionStatus('success');
-      setSubmissionMessage(response.data.message || "Convention créée et emails envoyés avec succès !");
-      // Réinitialiser le formulaire après succès
+      setSubmissionMessage("Convention créée et emails envoyés avec succès !")
       setFormData({
         eleve_nom: '', eleve_prenom: '', eleve_email: '', eleve_tel: '', eleve_date_naissance: '', eleve_classe: '',
         prof_nom: '', prof_email: '', prof_tel: '',
@@ -74,8 +72,7 @@ export default function Convention() {
         horaires_lundi: '', horaires_mardi: '', horaires_mercredi: '', horaires_jeudi: '', horaires_vendredi: '',
         showRecap: false
       });
-      // Optionnel: revenir à la page d'accueil ou de départ après un court délai
-      setTimeout(() => setShowForm(false), 3000); 
+      setTimeout(() => setShowForm(false), 1500); 
 
     } catch (error) {
       console.error("❌ Erreur lors de l'envoi du formulaire :", error.response?.data || error.message);
